@@ -5,13 +5,19 @@
   <RouterLink to="/">回前台首頁</RouterLink> |
   <a href="#" @click.prevent="logout">登出</a>
   <hr />
-  <RouterView />
+  <!-- 預設隱藏 RouterView ，當函式 checkAdmin 有驗證通過時再將 RouterView 顯示出來。 -->
+  <RouterView v-if="check" />
 </template>
 <script>
 import Swal from 'sweetalert2';
 // 引入sweet alert2套件
 const { VITE_APP_URL } = import.meta.env;
 export default {
+  data() {
+    return {
+      check: false,
+    };
+  },
   methods: {
     logout() {
       // 在點擊登出時把登入存的cookie清除掉
@@ -36,7 +42,9 @@ export default {
       if (cookieValue) {
         this.$http
           .post(`${VITE_APP_URL}v2/api/user/check`)
-          .then(() => {})
+          .then(() => {
+            this.check = true;
+          })
           .catch((error) => {
             Swal.fire({
               title: error.response.data.message,

@@ -43,26 +43,26 @@
 </template>
 
 <script>
-// import Modal from 'bootstrap/js/dist/modal';
+import Modal from 'bootstrap/js/dist/modal';
 
 export default {
   props: ['tempProduct', 'deleteProduct'],
   data() {
     return {
-      //   delProductModal: null,
+      delProductModal: null,
     };
   },
   methods: {
-    // opendelModal() {
-    //   this.delProductModal.show();
-    // },
-    // hidedelModal() {
-    //   this.delProductModal.hide();
-    // },
+    opendelModal() {
+      this.delProductModal.show();
+    },
+    hidedelModal() {
+      this.delProductModal.hide();
+    },
   },
   mounted() {
     // 將bootstrap刪除的modal實體化
-    // this.delProductModal = new Modal(this.$refs.delProductModal);
+    this.delProductModal = new Modal(this.$refs.delProductModal);
   },
 };
 </script>

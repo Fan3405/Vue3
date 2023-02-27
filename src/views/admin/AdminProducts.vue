@@ -59,22 +59,16 @@
   </div>
 
   <!-- Modal -->
-  <div
-    id="productModal"
-    ref="productModal"
-    class="modal fade"
-    tabindex="-1"
-    aria-labelledby="productModalLabel"
-    aria-hidden="true"
-  >
-    <!-- 將全域註冊元件以html標籤方式寫入，但如果只用<product-modal/>在html模式下可能會被判斷沒有結尾 -->
-    <product-modal
-      :temp-product="tempProduct"
-      :update-product="updateProduct"
-    ></product-modal>
-  </div>
 
-  <!-- 全域註冊delProductModal刪除元件 -->
+  <!-- 將元件以html標籤方式寫入，但如果只用<product-modal/>在html模式下可能會被判斷沒有結尾 -->
+  <ProductModal
+    ref="productModal"
+    :temp-product="tempProduct"
+    @update-product="updateProduct"
+    :is-new="isNew"
+  ></ProductModal>
+
+  <!-- delProductModal刪除元件 -->
   <DeleteModal
     ref="delProductModal"
     :temp-product="tempProduct"
@@ -86,9 +80,10 @@
 
 <script>
 import Swal from 'sweetalert2';
-import Modal from 'bootstrap/js/dist/modal';
+// import Modal from 'bootstrap/js/dist/modal';
 import PaginationComponent from '../../components/PaginationComponent.vue';
 import DeleteModal from '../../components/DeleteModal.vue';
+import ProductModal from '../../components/ProductModal.vue';
 
 const { VITE_APP_URL, VITE_APP_PATH } = import.meta.env;
 export default {
@@ -132,7 +127,7 @@ export default {
     openModal(status, product) {
       if (status === 'createNew') {
         // 打開新增modal
-        this.productModal.show();
+        this.$refs.productModal.openModal();
         this.isNew = true;
 
         // 如果是新增產品會帶入初始資料
@@ -141,14 +136,14 @@ export default {
         };
       } else if (status === 'edit') {
         // 打開編輯modal
-        this.productModal.show();
+        this.$refs.productModal.openModal();
         this.isNew = false;
 
         // 如果是編輯產品會帶入當前要編輯的資料
         this.tempProduct = { ...product };
       } else if (status === 'delete') {
         // 打開刪除modal
-        this.delProductModal.show();
+        this.$refs.delProductModal.opendelModal();
         this.tempProduct = { ...product }; // 取id使用
       }
     },
@@ -164,7 +159,35 @@ export default {
             confirmButtonText: 'OK',
           });
           this.getData();
-          this.delProductModal.hide();
+          this.$refs.delProductModal.hidedelModal();
+        })
+        .catch((error) => {
+          Swal.fire({
+            title: error.response.data.message,
+            icon: 'error',
+            confirmButtonText: 'OK',
+          });
+        });
+    },
+    updateProduct(tempProduct) {
+      this.tempProduct = tempProduct;
+      let method = 'post';
+      let url = `${VITE_APP_URL}v2/api/${VITE_APP_PATH}/admin/product`;
+      if (!this.isNew) {
+        url = `${VITE_APP_URL}v2/api/${VITE_APP_PATH}/admin/product/${this.tempProduct.id}`;
+        method = 'put';
+      }
+      this.$http[method](url, { data: this.tempProduct })
+        .then((response) => {
+          Swal.fire({
+            title: response.data.message,
+            icon: 'success',
+            confirmButtonText: 'OK',
+          });
+          this.getData();
+
+          //   關閉modal
+          this.$refs.productModal.hideModal();
         })
         .catch((error) => {
           Swal.fire({
@@ -179,14 +202,15 @@ export default {
     this.getData();
 
     // // 將bootstrap新增、編輯的modal實體化
-    this.productModal = new Modal(document.querySelector('#productModal'));
+    // this.productModal = new Modal(document.querySelector('#productModal'));
 
     // // 將bootstrap刪除的modal實體化
-    this.delProductModal = new Modal(this.$refs.delProductModal);
+    // this.delProductModal = new Modal(this.$refs.delProductModal);
   },
   components: {
     PaginationComponent,
     DeleteModal,
+    ProductModal,
   },
 };
 </script>
