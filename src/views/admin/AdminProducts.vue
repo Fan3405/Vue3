@@ -86,7 +86,7 @@
 
 <script>
 import Swal from 'sweetalert2';
-// import Modal from 'bootstrap/js/dist/modal';
+import Modal from 'bootstrap/js/dist/modal';
 import PaginationComponent from '../../components/PaginationComponent.vue';
 import DeleteModal from '../../components/DeleteModal.vue';
 
@@ -179,10 +179,10 @@ export default {
     this.getData();
 
     // // 將bootstrap新增、編輯的modal實體化
-    // this.productModal = new Modal(document.querySelector('#productModal'));
+    this.productModal = new Modal(document.querySelector('#productModal'));
 
     // // 將bootstrap刪除的modal實體化
-    // this.delProductModal = new Modal(this.$refs.delProductModal);
+    this.delProductModal = new Modal(this.$refs.delProductModal);
   },
   components: {
     PaginationComponent,
