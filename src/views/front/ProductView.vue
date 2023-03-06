@@ -18,11 +18,13 @@
               <p>商品描述：{{ product.description }}</p>
               <p>商品內容：{{ product.content }}</p>
               <div v-if="product.price === product.origin_price" class="h5">
-                {{ product.price }} 元
+                $ {{ product.price }} 元
               </div>
               <div v-else>
-                <del class="h6">原價 {{ product.origin_price }} 元</del>
-                <div class="h5">現在只要 {{ product.price }} 元</div>
+                <del class="h6 text-danger"
+                  >原價$ {{ product.origin_price }} 元</del
+                >
+                <div class="h5">現在只要$ {{ product.price }} 元</div>
               </div>
               <div>
                 <div class="input-group">

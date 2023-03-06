@@ -1,5 +1,4 @@
 <template>
-  這是後台產品列表
   <div class="container">
     <div class="text-end mt-4">
       <button class="btn btn-primary" @click="openModal('createNew')">
@@ -11,9 +10,9 @@
         <tr>
           <th width="120">分類</th>
           <th>產品名稱</th>
-          <th width="120">原價</th>
-          <th width="120">售價</th>
-          <th width="100">是否啟用</th>
+          <th width="130">原價</th>
+          <th width="130">售價</th>
+          <th width="130">是否啟用</th>
           <th width="120">編輯</th>
         </tr>
       </thead>
@@ -21,8 +20,8 @@
         <tr v-for="product in products" :key="product.id">
           <td>{{ product.category }}</td>
           <td>{{ product.title }}</td>
-          <td class="text-end">{{ product.origin_price }}</td>
-          <td class="text-end">{{ product.price }}</td>
+          <td>{{ product.origin_price }}</td>
+          <td>{{ product.price }}</td>
           <td>
             <span class="text-success" v-if="product.is_enabled">啟用</span>
             <span v-else>未啟用</span>
@@ -63,7 +62,7 @@
   <!-- 將元件以html標籤方式寫入，但如果只用<product-modal/>在html模式下可能會被判斷沒有結尾 -->
   <ProductModal
     ref="productModal"
-    :temp-product="tempProduct"
+    :product="tempProduct"
     @update-product="updateProduct"
     :is-new="isNew"
   ></ProductModal>
@@ -96,6 +95,8 @@ export default {
         imagesUrl: [],
       },
 
+      currentPage: 1, // 做當前頁面使用
+
       //   確認是新增或是編輯所使用的
       isNew: false,
 
@@ -106,6 +107,19 @@ export default {
   methods: {
     getData(page = 1) {
       // page=1設定參數預設值，如果沒有設定參數預設值的話page會是undefined
+      this.currentPage = page;
+
+      // vue loading效果
+      const loader = this.$loading.show({
+        // Optional parameters
+        container: this.fullPage ? null : this.$refs.formContainer,
+        canCancel: false, // 不可點擊關閉vue loading效果
+        onCancel: this.onCancel,
+        loader: 'dots', // 設定樣式
+        width: 100, // 設定大小
+        height: 100, // 設定大小
+        color: 'gray', // 設定顏色
+      });
       this.$http
         .get(
           `${VITE_APP_URL}v2/api/${VITE_APP_PATH}/admin/products?page=${page}`,
@@ -115,6 +129,8 @@ export default {
 
           // 將分頁功能儲存
           this.page = response.data.pagination;
+
+          loader.hide(); // 讀完資料關閉vue loading效果
         })
         .catch((error) => {
           Swal.fire({
@@ -122,6 +138,7 @@ export default {
             icon: 'error',
             confirmButtonText: 'OK',
           });
+          loader.hide(); // 讀完資料關閉vue loading效果
         });
     },
     openModal(status, product) {
@@ -158,7 +175,7 @@ export default {
             icon: 'success',
             confirmButtonText: 'OK',
           });
-          this.getData();
+          this.getData(this.currentPage); // 刪完資料會停留在當前頁面
           this.$refs.delProductModal.hidedelModal();
         })
         .catch((error) => {
@@ -184,7 +201,7 @@ export default {
             icon: 'success',
             confirmButtonText: 'OK',
           });
-          this.getData();
+          this.getData(this.currentPage);
 
           //   關閉modal
           this.$refs.productModal.hideModal();
@@ -200,7 +217,6 @@ export default {
   },
   mounted() {
     this.getData();
-
     // // 將bootstrap新增、編輯的modal實體化
     // this.productModal = new Modal(document.querySelector('#productModal'));
 

@@ -1,43 +1,44 @@
 <template>
-  這是登入頁面
-  <VueForm id="form" class="form" v-slot="{ errors }" @submit="login">
-    <div class="mb-3">
-      <label for="username" class="form-label">Email</label>
-      <!-- name="Email"E改大小寫都可以也可改中文 -->
-      <VueField
-        v-model="user.username"
-        id="username"
-        name="Email"
-        type="email"
-        class="form-control"
-        :class="{ 'is-invalid': errors['Email'] }"
-        placeholder="請輸入 Email"
-        rules="required|email"
-      ></VueField>
-      <ErrorMessage name="Email" class="invalid-feedback"></ErrorMessage>
-    </div>
+  <div class="container pt-5">
+    <VueForm id="form" class="form" v-slot="{ errors }" @submit="login">
+      <div class="mb-3">
+        <label for="username" class="form-label">Email</label>
+        <!-- name="Email"E改大小寫都可以也可改中文 -->
+        <VueField
+          v-model="user.username"
+          id="username"
+          name="Email"
+          type="email"
+          class="form-control"
+          :class="{ 'is-invalid': errors['Email'] }"
+          placeholder="請輸入 Email"
+          rules="required|email"
+        ></VueField>
+        <ErrorMessage name="Email" class="invalid-feedback"></ErrorMessage>
+      </div>
 
-    <div class="mb-3">
-      <label for="password" class="form-label">Password</label>
-      <VueField
-        v-model="user.password"
-        id="password"
-        name="password"
-        type="password"
-        class="form-control"
-        :class="{ 'is-invalid': errors['password'] }"
-        placeholder="請輸入密碼"
-        rules="required"
-      ></VueField>
-      <ErrorMessage name="password" class="invalid-feedback"></ErrorMessage>
-    </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <VueField
+          v-model="user.password"
+          id="password"
+          name="password"
+          type="password"
+          class="form-control"
+          :class="{ 'is-invalid': errors['password'] }"
+          placeholder="請輸入密碼"
+          rules="required"
+        ></VueField>
+        <ErrorMessage name="password" class="invalid-feedback"></ErrorMessage>
+      </div>
 
-    <div class="text-end">
-      <button type="submit" class="btn btn-lg btn-primary w-100 mt-3">
-        登入
-      </button>
-    </div>
-  </VueForm>
+      <div class="text-end">
+        <button type="submit" class="btn btn-lg btn-primary w-100 mt-3">
+          登入
+        </button>
+      </div>
+    </VueForm>
+  </div>
 </template>
 
 <script>

@@ -1,76 +1,125 @@
 <template>
-  這是產品列表
-  <table class="table align-middle">
-    <thead>
-      <tr>
-        <th>圖片</th>
-        <th>商品名稱</th>
-        <th>價格</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="product in products" :key="product.id">
-        <td style="width: 200px">
-          <!-- 將圖片加入div背景圖片方法:style="{backgroundImage: `url(${product.imageUrl})`}"
-                       直接插入圖片方法<img :src="product.imageUrl" alt="" /> -->
-          <div
-            style="
-              height: 100px;
-              background-size: cover;
-              background-position: center;
-            "
-            :style="{ backgroundImage: `url(${product.imageUrl})` }"
-          ></div>
-        </td>
-        <td>{{ product.title }}</td>
-        <td>
-          <div v-if="product.price === product.origin_price" class="h5">
-            {{ product.price }} 元
-          </div>
+  <div
+    style="
+      background-position: center 72%;
+      background-size: cover;
+      /* background-repeat: no-repeat; */
+      /* background-attachment: fixed; */
+      object-fit: cover;
+      height: 300px;
+      background-image: url('https://storage.googleapis.com/vue-course-api.appspot.com/zxcv123/1677849908265.jpg?GoogleAccessId=firebase-adminsdk-zzty7%40vue-course-api.iam.gserviceaccount.com&Expires=1742169600&Signature=fLDrB8x9v9yQBkz1XtyoXwgloH1OaEcK1KoecN1IK9ahVQygTs5Yv7DXIVMXaC%2BxV01H2LRod7sw6Ht73hkPJ1kavi4HDsnSzgoeTvMRrVP2HggMND8hZ7KQ3cKNFmsJuA81KtDCv1hYug59BVzrGd3awO9Me4T389t1nMHBOvhQNqNJ6oavqjAWcg9%2Fxpy46PFO9J%2B8Fx%2BePjNuthUqSvlaglIgZ8UGpULqLedR5jELiNXZq95kSw8HqFw%2FyzU3qCF6EAGAQ6%2FZX1akSHNzWj8f%2FnBuqBfMC3EOtbrrxd84QOtr5Em1rCQ41QqB500VQ3pYJkq%2BQ1lq7dTBgj7%2BYQ%3D%3D');
+    "
+  ></div>
+  <main class="container">
+    <div class="row">
+      <div class="col-md-3"></div>
+      <div class="col-md-9 text-center">
+        <h2 class="text-darkGreen fw-bold p-4 mb-0 hrPromotions">限時特價商品</h2>
+        <p class="fs-4 border border-danger d-inline-block text-danger px-3 py-1 rounded-pill clock"></p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3">
+        <div class="list-group sticky-top top-150" id="list-tab" role="tablist">
+          <h4 class="list-group-item bg-primary text-white m-0" aria-current="true">菜單分類</h4>
+          <ul class="list-unstyled">
+            <li>
+              <a
+                class="list-group-item list-group-item-action bg-primary bg-opacity-50 text-white"
+                id="list-home-list"
+                href="#"
+                role="tab"
+                aria-controls="list-home"
+                >所有餐點
+              </a>
+            </li>
 
-          <div v-else>
-            <del class="h6">原價 {{ product.origin_price }} 元</del>
-            <div class="h5">現在只要 {{ product.price }} 元</div>
-          </div>
-        </td>
-        <td>
-          <div class="btn-group btn-group-sm">
-            <!-- 當傳入的id相同時會跑loading效果v-if="productId===product.id" -->
-            <RouterLink
-              :to="`/product/${product.id}`"
-              class="btn btn-outline-secondary"
-            >
-              查看更多產品細節</RouterLink
-            >
-            <!-- 點擊加入購物車時會先顯示不能再次點擊按鈕:disabled="addCartLoading===product.id" -->
-            <button
-              type="button"
-              class="btn btn-outline-danger"
-              @click="addToCart(product.id)"
-              :disabled="addCartLoading === product.id"
-            >
-              <!-- 當傳入的id相同時會跑loading效果v-if="addCartLoading===product.id" -->
-              <!-- <i
+            <li>
+              <a
+                class="list-group-item list-group-item-action bg-primary bg-opacity-50 text-white"
+                id="list-home-list"
+                href="#"
+                role="tab"
+                aria-controls="list-home"
+                >烤肉
+              </a>
+            </li>
+
+            <li>
+              <a
+                class="list-group-item list-group-item-action bg-primary bg-opacity-50 text-white"
+                id="list-home-list"
+                href="#"
+                role="tab"
+                aria-controls="list-home"
+                >蔬菜
+              </a>
+            </li>
+
+            <li>
+              <a
+                class="list-group-item list-group-item-action bg-primary text-white bg-opacity-50 bg-opacity-50 rounded-bottom"
+                id="list-home-list"
+                href="#"
+                role="tab"
+                aria-controls="list-home"
+                >飲品</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-md-9">
+        <div class="row my-4 g-4 mt-0">
+          <div class="col-md-4 mt-0 mb-4" v-for="product in products" :key="product.id">
+            <div class="card">
+              <img :src="product.imageUrl" class="card-img-top object-fit" height="200" :alt="product.title" />
+              <div class="card-body">
+                <h5 class="card-title">
+                  {{ product.title }}
+                  <!-- float-end可以讓文字在span裡靠最右 -->
+                  <span class="float-end"
+                    >$
+                    {{ product.price }}
+                  </span>
+                </h5>
+                <!-- w-100把加入購物車按鈕設定滿寬 -->
+                <RouterLink :to="`/product/${product.id}`" class="btn btn-outline-secondary w-100 mt-3">
+                  查看更多產品細節</RouterLink
+                >
+
+                <!-- 點擊加入購物車時會先顯示不能再次點擊按鈕:disabled="addCartLoading===product.id" -->
+                <!-- @click="() => addToCart(product.id)"前面加入箭頭函式表示要點擊才執行(在JS邏輯才會正確)，沒有加入表示立刻執行 -->
+                <button
+                  type="button"
+                  class="btn btn-outline-primary w-100 mt-3"
+                  @click="() => addToCart(product.id)"
+                  :disabled="addCartLoading === product.id"
+                >
+                  <!-- 當傳入的id相同時會跑loading效果v-if="addCartLoading===product.id" -->
+                  <!-- <i
                 class="fas fa-spinner fa-pulse"
                 v-if="addCartLoading === product.id"
               ></i> -->
-              <span
-                class="spinner-border spinner-border-sm"
-                role="status"
-                v-if="addCartLoading === product.id"
-              ></span>
-              加到購物車
-            </button>
+                  <span class="spinner-border spinner-border-sm" role="status" v-if="addCartLoading === product.id"></span>
+                  加到購物車
+                </button>
+              </div>
+            </div>
           </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+        </div>
+        <PaginationComponent :pages="page" :get-data="getProducts"></PaginationComponent>
+      </div>
+    </div>
+  </main>
 </template>
 
 <script>
 import Swal from 'sweetalert2'; // 引入sweet alert2套件
+import { mapActions } from 'pinia';
+import cartStore from '../../stores/cartStore';
+import PaginationComponent from '../../components/PaginationComponent.vue';
 
 // 用解構方式取得URL、PATH
 const { VITE_APP_URL, VITE_APP_PATH } = import.meta.env;
@@ -80,10 +129,15 @@ export default {
       products: [], // 產品列表
       addCartLoading: null, // 設定loading效果用的，點擊加入購物車會先將id傳入之後再清空
       fullPage: false,
+
+      currentPage: 1, // 做當前頁面使用
+
+      page: {}, // 做分頁使用
     };
   },
   methods: {
-    getProducts() {
+    getProducts(page = 1) {
+      this.currentPage = page;
       // vue loading效果
       const loader = this.$loading.show({
         // Optional parameters
@@ -96,8 +150,17 @@ export default {
         color: 'gray', // 設定顏色
       });
       this.$http
-        .get(`${VITE_APP_URL}v2/api/${VITE_APP_PATH}/products`)
+        .get(`${VITE_APP_URL}v2/api/${VITE_APP_PATH}/products?page=${page}`)
         .then((response) => {
+          // 將分頁功能儲存
+          this.page = response.data.pagination;
+
+          // 滾動到當前頁面的頂部
+          window.scrollTo({
+            top: 300,
+            behavior: 'smooth',
+          });
+
           // console.log('產品列表', response.data.products); 測試用
           this.products = response.data.products;
           loader.hide(); // 讀完資料關閉vue loading效果
@@ -111,6 +174,7 @@ export default {
           loader.hide(); // 讀完資料關閉vue loading效果
         });
     },
+    ...mapActions(cartStore, ['getCarts']),
     // eslint-disable-next-line camelcase
     addToCart(product_id, qty = 1) {
       // 需要傳入後端的資料格式，qty=1當沒有傳入該參數時，預設值為1
@@ -133,6 +197,7 @@ export default {
             confirmButtonText: 'OK',
           });
           this.addCartLoading = null; // 清除id下次點擊比對id才能顯示loading效果
+          this.getCarts();
         })
         .catch((error) => {
           Swal.fire({
@@ -145,6 +210,9 @@ export default {
   },
   mounted() {
     this.getProducts();
+  },
+  components: {
+    PaginationComponent,
   },
 };
 </script>

@@ -34,10 +34,24 @@
                     placeholder="請輸入圖片連結"
                   />
                 </div>
+                <div class="mb-3">
+                  <label for="customFile" class="form-label"
+                    >或 上傳圖片
+                    <i v-if="fileLoading" class="fas fa-spinner fa-spin"></i>
+                  </label>
+                  <input
+                    type="file"
+                    id="customFile"
+                    class="form-control"
+                    ref="fileInput"
+                    @change="uploadFile"
+                  />
+                </div>
+                <h4>主要圖片</h4>
                 <img class="img-fluid" :src="tempProduct.imageUrl" alt="" />
               </div>
               <div>
-                <h4>多圖設置</h4>
+                <h4>其他圖片</h4>
 
                 <!-- 判斷tempProduct.imagesUrl是一個陣列 -->
                 <div v-if="Array.isArray(tempProduct.imagesUrl)">
@@ -202,9 +216,22 @@
 
 <script>
 import Modal from 'bootstrap/js/dist/modal';
+import Swal from 'sweetalert2';
+
+const { VITE_APP_URL, VITE_APP_PATH } = import.meta.env;
 
 export default {
-  props: ['isNew'],
+  props: ['isNew', 'product'], // 也可用以下寫法
+  // props: {
+  //   product: {
+  //     type: Object,
+  //     default() { return {}; },
+  //   },
+  //   isNew: {
+  //     type: Boolean,
+  //     default: false,
+  //   },
+  // },
   emits: ['update-product'],
   data() {
     return {
@@ -212,6 +239,8 @@ export default {
       tempProduct: {
         imagesUrl: [],
       },
+
+      fileLoading: false, // 上傳檔案loading效果使用
 
       // 做分頁使用
       page: {},
@@ -224,8 +253,53 @@ export default {
     hideModal() {
       this.productModal.hide();
     },
-  },
+    uploadFile() {
+      // 解構寫法，取得input DOM位置，相當於const fileInput = this.$refs.fileInput;
+      const { fileInput } = this.$refs;
 
+      // 將檔案位置取出，也可將兩行合併寫const uploadedFile = this.$refs.fileInput.files[0];
+      const file = fileInput.files[0];
+      const formData = new FormData(); // 建立表單格式
+      formData.append('file-to-upload', file); // 將要上傳的檔案夾帶進來’file-to-upload’是API對應的欄位，file是要上傳的檔案
+
+      this.fileLoading = true;
+      this.$http
+        .post(`${VITE_APP_URL}v2/api/${VITE_APP_PATH}/admin/upload`, formData)
+        .then((response) => {
+          this.tempProduct.imageUrl = response.data.imageUrl;
+          if (response.data.success) {
+            this.$refs.fileInput.value = ''; // 上傳成功後清空上傳檔案值
+            this.fileLoading = false; // 上傳檔案loading效果
+            Swal.fire({
+              title: '圖片上傳成功',
+              icon: 'success',
+              confirmButtonText: 'OK',
+            });
+          }
+        })
+        .catch((error) => {
+          this.$refs.fileInput.value = '';
+          this.fileLoading = false;
+          Swal.fire({
+            title: error.response.data.message,
+            icon: 'error',
+            confirmButtonText: 'OK',
+          });
+        });
+    },
+  },
+  watch: {
+    // 用watch監聽product傳入的值
+    product() {
+      this.tempProduct = this.product;
+      if (!this.tempProduct.imagesUrl) {
+        this.tempProduct.imagesUrl = [];
+      }
+      if (!this.tempProduct.imageUrl) {
+        this.tempProduct.imageUrl = '';
+      }
+    },
+  },
   mounted() {
     // 將bootstrap的modal實體化
     this.productModal = new Modal(this.$refs.productModal);

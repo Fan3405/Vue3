@@ -17,6 +17,7 @@ const routes = [
       },
       {
         path: 'products',
+        name: 'products',
         component: () => import('../views/front/ProductsView.vue'),
       },
       {
@@ -46,6 +47,19 @@ const routes = [
         component: () => import('../views/admin/AdminOrders.vue'),
       },
     ],
+  },
+  // 也可做404頁面
+  // {
+  //   path:'/:pathMatch(.*)*',
+  //   component:()=>import('建立的404頁面路徑')
+  // }
+
+  // 重新導向，錯誤頁面會回到首頁
+  {
+    path: '/:pathMatch(.*)*', // 全部以及子路徑下都符合條件
+    redirect: {
+      name: 'Home', // 對應上方路徑的name名稱
+    },
   },
 ];
 

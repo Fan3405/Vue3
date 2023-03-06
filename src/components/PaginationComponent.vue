@@ -9,7 +9,7 @@
        6.@click="getData(pages.current_page-1)、
          @click="getData(pages.current_page+1)點擊按鈕取得前一頁、下一頁資料 -->
   <nav aria-label="Page navigation example">
-    <ul class="pagination">
+    <ul class="pagination justify-content-center">
       <li class="page-item" :class="{ disabled: !pages.has_pre }">
         <a
           class="page-link"

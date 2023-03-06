@@ -1,4 +1,5 @@
 import { createApp } from 'vue';
+import { createPinia } from 'pinia';
 
 // vue axios
 import axios from 'axios';
@@ -38,11 +39,15 @@ configure({
 // 設定預設語系
 setLocale('zh_TW');
 
+const pinia = createPinia();
+
 const app = createApp(App);
 
 app.use(LoadingPlugin);
 
 app.use(VueAxios, axios);
+
+app.use(pinia);
 
 app.use(router);
 

@@ -11,7 +11,7 @@
       <div class="modal-content border-0">
         <div class="modal-header bg-danger text-white">
           <h5 id="delProductModalLabel" class="modal-title">
-            <span>刪除產品</span>
+            <span>{{ isOrder ? '刪除訂單' : '刪除產品' }}</span>
           </h5>
           <button
             type="button"
@@ -22,8 +22,13 @@
         </div>
         <div class="modal-body">
           是否刪除
-          <strong class="text-danger">{{ tempProduct.title }}</strong>
-          商品(刪除後將無法恢復)。
+          <strong v-if="isOrder" class="text-danger"
+            >{{ tempOrder.user.email }}訂單</strong
+          >
+          <strong v-else class="text-danger"
+            >{{ tempProduct.title }}商品</strong
+          >
+          (刪除後將無法恢復)。
         </div>
         <div class="modal-footer">
           <button
@@ -46,7 +51,7 @@
 import Modal from 'bootstrap/js/dist/modal';
 
 export default {
-  props: ['tempProduct', 'deleteProduct'],
+  props: ['tempProduct', 'deleteProduct', 'isOrder', 'tempOrder'],
   data() {
     return {
       delProductModal: null,
